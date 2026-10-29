@@ -804,28 +804,52 @@ scene.addEventListener('click', () => { if (!opened) seal.click(); });
 
 /* ---- fireworks ---- */
 function fireworks(cv, minGap, maxGap, isOn) {
-  const c = cv.getContext('2d'); let W = 0, H = 0, ps = [], next = 0, run = false;
+  const c = cv.getContext('2d'); let W = 0, H = 0, ps = [], rk = [], next = 0, run = false, last = 0;
   const cols = ['#ffd978', '#ff7a8a', '#6fe0d0', '#fff3d0', '#ff9b45', '#c9a7ff'];
   function size() { const d = Math.min(window.devicePixelRatio || 1, 2); W = cv.clientWidth; H = cv.clientHeight; cv.width = W * d; cv.height = H * d; c.setTransform(d, 0, 0, d, 0, 0); }
-  function burst() {
-    const x = W * (.1 + Math.random() * .8), y = H * (.08 + Math.random() * .5), col = cols[(Math.random() * cols.length) | 0], n = 46;
-    for (let i = 0; i < n; i++) { const a = i / n * 6.283 + Math.random() * .2, v = 1.2 + Math.random() * 2.2; ps.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, l: 1, col }); }
+  function launch() {
+    const x = W * (.06 + Math.random() * .88), ty = H * (.08 + Math.random() * .55), sy = H + 10;
+    rk.push({ x, y: sy, tx: x + (Math.random() - .5) * W * .3, ty, vy: -(H * (.0075 + Math.random() * .0035)), col: cols[(Math.random() * cols.length) | 0], tr: [] });
+  }
+  function explode(r) {
+    const n = 70 + ((Math.random() * 30) | 0), ring = Math.random() < .4;
+    for (let i = 0; i < n; i++) {
+      const a = i / n * 6.283 + Math.random() * .15, v = ring ? 1.7 : 0.5 + Math.random() * 2;
+      ps.push({ x: r.x, y: r.y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, l: 1, d: .0055 + Math.random() * .005, col: Math.random() < .25 ? '#fff3d0' : r.col, tr: [] });
+    }
+    ps.push({ flash: 1, x: r.x, y: r.y, col: r.col, l: 1 });
   }
   function frame(t) {
     if (!run) return;
     if (!isOn()) { run = false; c.clearRect(0, 0, W, H); return; }
+    const k = Math.min((t - last) / 16.7 || 1, 3); last = t;
     c.clearRect(0, 0, W, H);
-    if (t > next) { burst(); if (Math.random() < .4) burst(); next = t + minGap + Math.random() * (maxGap - minGap); }
+    if (t > next) { launch(); if (Math.random() < .35) setTimeout(launch, 400 + Math.random() * 900); next = t + minGap + Math.random() * (maxGap - minGap); }
     c.globalCompositeOperation = 'lighter';
+    rk = rk.filter(r => {
+      r.tr.push([r.x, r.y]); if (r.tr.length > 14) r.tr.shift();
+      r.y += r.vy * k; r.x += (r.tx - r.x) * .012 * k; r.vy *= .99;
+      for (let i = 0; i < r.tr.length; i++) { c.globalAlpha = i / r.tr.length * .8; c.fillStyle = '#ffe9b0'; c.beginPath(); c.arc(r.tr[i][0] + (Math.random() - .5), r.tr[i][1], 1.3 * i / r.tr.length + .3, 0, 6.283); c.fill(); }
+      c.globalAlpha = 1; c.fillStyle = '#fff'; c.beginPath(); c.arc(r.x, r.y, 2, 0, 6.283); c.fill();
+      if (r.y <= r.ty || r.vy > -1.1) { explode(r); return false; }
+      return true;
+    });
     ps = ps.filter(p => p.l > 0);
-    ps.forEach(p => { p.x += p.vx; p.y += p.vy; p.vy += .035; p.vx *= .985; p.l -= .014; c.globalAlpha = Math.max(p.l, 0); c.fillStyle = p.col; c.beginPath(); c.arc(p.x, p.y, 1.8, 0, 6.283); c.fill(); });
+    ps.forEach(p => {
+      if (p.flash) { p.l -= .05 * k; c.globalAlpha = Math.max(p.l, 0) * .5; const g = c.createRadialGradient(p.x, p.y, 0, p.x, p.y, 70); g.addColorStop(0, p.col); g.addColorStop(1, 'rgba(0,0,0,0)'); c.fillStyle = g; c.fillRect(p.x - 70, p.y - 70, 140, 140); return; }
+      p.tr.push([p.x, p.y]); if (p.tr.length > 5) p.tr.shift();
+      p.x += p.vx * k; p.y += p.vy * k; p.vy += .025 * k; p.vx *= .985; p.vy *= .99; p.l -= p.d * k;
+      c.strokeStyle = p.col; c.lineWidth = 1.6; c.lineCap = 'round';
+      c.globalAlpha = Math.max(p.l, 0) * (p.l < .35 && Math.random() < .35 ? .3 : 1);
+      c.beginPath(); c.moveTo(p.tr[0][0], p.tr[0][1]); c.lineTo(p.x, p.y); c.stroke();
+    });
     c.globalAlpha = 1; c.globalCompositeOperation = 'source-over';
     requestAnimationFrame(frame);
   }
-  return { start() { if (run) return; size(); run = true; next = 0; requestAnimationFrame(frame); }, size };
+  return { start() { if (run) return; size(); run = true; next = 0; last = performance.now(); requestAnimationFrame(frame); }, size };
 }
 if (!reduce) {
-  const fi = fireworks($('#fw-in'), 900, 2000, () => !intro.classList.contains('done'));
+  const fi = fireworks($('#fw-in'), 1500, 3200, () => !intro.classList.contains('done'));
   fi.start(); addEventListener('resize', fi.size);
 }
 function startMainFireworks() {
