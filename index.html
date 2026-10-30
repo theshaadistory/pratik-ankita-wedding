@@ -254,7 +254,7 @@ footer .mitti{max-width:34rem;margin:14px auto 0;line-height:1.9}
 .grid{position:relative;display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding:8px 0 12px;overscroll-behavior-x:contain}
 .grid::-webkit-scrollbar{display:none}
 .grid::before,.grid::after{content:'';flex:0 0 calc(50% - min(36%,150px) - 14px)}
-.grid .slide{flex:0 0 min(72%,300px);scroll-snap-align:center;padding:0;border:2px solid var(--gold);background:var(--card);cursor:grab;aspect-ratio:3/4;
+.grid .slide{flex:0 0 min(72%,300px);scroll-snap-align:center;padding:0;border:0;background:var(--card);cursor:grab;aspect-ratio:3/4;
   border-radius:999px 999px 14px 14px;overflow:hidden;-webkit-tap-highlight-color:transparent;transform:scale(.9);opacity:.6;transition:transform .5s ease,opacity .5s ease}
 .grid .slide.on{transform:none;opacity:1}
 .grid img{width:100%;height:100%;object-fit:cover}
@@ -292,7 +292,7 @@ footer .mitti{max-width:34rem;margin:14px auto 0;line-height:1.9}
 /* ===================== 11. FOOTER ===================== */
 footer{background:linear-gradient(180deg,#6b1a25,#4a1019);color:#f8e9cc;text-align:center;
   padding:64px 20px calc(56px + env(safe-area-inset-bottom))}
-footer .bust{display:flex;justify-content:center;gap:30px;max-width:390px;margin:0 auto 18px}
+footer .bust{display:flex;justify-content:center;gap:52px;max-width:430px;margin:0 auto 18px}
 footer .fp{flex:1 1 0;min-width:0;aspect-ratio:3/4;overflow:hidden;border-radius:200px 200px 14px 14px;border:2px solid #e9c77a;background:#4a1019}
 footer .fp img{width:100%;height:100%;object-fit:cover;display:block}
 footer h2{color:#f8e9cc;font-size:clamp(2rem,8vw,3.6rem);margin-top:6px}
@@ -318,6 +318,37 @@ footer .fam{margin:30px auto 0;max-width:34rem;font-family:var(--disp);font-size
 /* ===================== 13. SCROLL REVEAL ===================== */
 .reveal{opacity:0;transform:translate3d(0,22px,0);transition:opacity 1.1s ease var(--d,0ms),transform 1.1s ease var(--d,0ms)}
 .reveal.in{opacity:1;transform:none}
+
+/* light effects on all elements */
+.hrt{display:inline-block;font-size:1.5em;line-height:1;vertical-align:middle;margin:0 .15em;transform-origin:50% 50%;animation:hspin 2.4s linear infinite;filter:drop-shadow(0 0 6px rgba(255,70,90,.9)) drop-shadow(0 0 14px rgba(255,120,130,.6))}
+@keyframes hspin{from{transform:perspective(200px) rotateY(0)}to{transform:perspective(200px) rotateY(360deg)}}
+.blessing{animation:tglow 3.2s ease-in-out infinite alternate}
+.names{animation:tglow 4s ease-in-out infinite alternate}
+.h2{animation:hglow 4.5s ease-in-out infinite alternate}
+.eyebrow{animation:hglow 4.5s ease-in-out infinite alternate}
+@keyframes tglow{from{text-shadow:0 0 0 rgba(233,190,100,0)}to{text-shadow:0 0 12px rgba(233,190,100,.7),0 0 26px rgba(201,150,43,.35)}}
+@keyframes hglow{from{text-shadow:0 0 0 rgba(201,150,43,0)}to{text-shadow:0 0 14px rgba(201,150,43,.4)}}
+.person,.vcard,.mapcard,.scratch{animation:cbreath 5s ease-in-out infinite alternate}
+.vcard:nth-child(2){animation-delay:.8s}.vcard:nth-child(3){animation-delay:1.6s}.person+.person{animation-delay:1s}
+@keyframes cbreath{from{box-shadow:0 4px 14px rgba(201,150,43,.10)}to{box-shadow:0 8px 28px rgba(201,150,43,.34)}}
+.portrait{animation:cbreath 4.5s ease-in-out infinite alternate}
+footer .fp{animation:fpglow 4.5s ease-in-out infinite alternate}
+footer .fp+.hs+.fp,footer .bust .fp:last-child{animation-delay:1.2s}
+@keyframes fpglow{from{box-shadow:0 0 0 rgba(233,199,122,0)}to{box-shadow:0 0 22px rgba(233,199,122,.5)}}
+.btn{animation:bpulse 3.6s ease-in-out infinite}
+@keyframes bpulse{0%,100%{box-shadow:0 0 0 0 rgba(201,150,43,0)}50%{box-shadow:0 0 0 6px rgba(201,150,43,.14)}}
+.yancha,.venue-f,.msg{animation:tglow 4.5s ease-in-out infinite alternate}
+@media (prefers-reduced-motion:reduce){.hrt,.blessing,.names,.h2,.eyebrow,.person,.vcard,.mapcard,.scratch,.car,.portrait,footer .fp,.btn,.yancha,.venue-f,.msg{animation:none}}
+/* events: single column on phones */
+@media (max-width:600px){
+  .tl::before{left:22px;margin-left:0}
+  .tl li,.tl li:nth-child(odd),.tl li:nth-child(even){width:calc(100% - 58px);margin-left:auto;margin-right:0;padding:16px 16px 18px}
+  .tl li:nth-child(odd) .num,.tl li:nth-child(even) .num,.num{left:-58px;right:auto;width:40px;height:40px;top:14px;font-size:1.15rem}
+  .tl li.reveal:nth-child(odd){transform:translate3d(28px,0,0)}
+  .tl li.reveal.in:nth-child(odd){transform:none}
+  .tl li:nth-child(even) .ev-ic,.tl li .ev-ic{left:auto;right:10px}
+  .links .btn{flex:1 1 100%}
+}
 
 /* ===================== 14. REDUCED MOTION ===================== */
 @media (prefers-reduced-motion:reduce){
@@ -475,8 +506,7 @@ footer .fam{margin:30px auto 0;max-width:34rem;font-family:var(--disp);font-size
 <!-- ============== THE COUPLE ============== -->
 <section id="couple" class="bg-floral">
   <div class="wrap">
-    <p class="eyebrow reveal">शुभ विवाह</p>
-    <h2 class="h2 reveal">प्रतिक आणि अंकिता</h2>
+    <h2 class="h2 reveal">शुभ विवाह</h2>
     <div class="couple stagger">
       <article class="person reveal">
         <p class="label">चि.</p>
@@ -602,7 +632,7 @@ footer .fam{margin:30px auto 0;max-width:34rem;font-family:var(--disp);font-size
   <p class="venue-f">शंतनू गार्डन मंगल कार्यालय</p>
   <p>मंचर-घोडेगाव रोड, कोटमदरा फाटा जवळ ता. आंबेगाव जि. पुणे</p>
   <p class="fam">आपल्या उपस्थितीने हा विवाह सोहळा रंगवावा आणि वधू-वरांना शुभाशीर्वाद द्यावेत, हीच सैद आणि टेमगिरे परिवाराची विनंती.</p>
-  <p class="tag">❤️ #antik ❤️</p>
+  <p class="tag"><span class="hrt">❤️</span> #antik <span class="hrt">❤️</span></p>
 </footer>
 
 <!-- ============== LIGHTBOX ============== -->
@@ -687,7 +717,6 @@ const ICONS = [
         '<p><b>स्थळ</b>' + (f.venue || CONFIG.venue) + '</p>' +
       '</div>' +
       '<div class="links">' +
-        '<a class="btn ghost" href="' + CONFIG.maps + '" target="_blank" rel="noopener noreferrer">दिशा मिळवा</a>' +
         '<a class="btn ghost" href="' + gcalUrl(f) + '" target="_blank" rel="noopener noreferrer">कॅलेंडरमध्ये जोडा</a>' +
       '</div>';
     tl.appendChild(li);
@@ -809,14 +838,14 @@ function fireworks(cv, minGap, maxGap, isOn) {
   function size() { const d = Math.min(window.devicePixelRatio || 1, 2); W = cv.clientWidth; H = cv.clientHeight; cv.width = W * d; cv.height = H * d; c.setTransform(d, 0, 0, d, 0, 0); }
   function launch() {
     const x = W * (.06 + Math.random() * .88), ty = H * (.08 + Math.random() * .55), sy = H + 10;
-    rk.push({ x, y: sy, tx: x + (Math.random() - .5) * W * .3, ty, vy: -(H * (.0021 + Math.random() * .00098)), col: cols[(Math.random() * cols.length) | 0], tr: [] });
+    rk.push({ x, y: sy, tx: x + (Math.random() - .5) * W * .3, ty, vy: -(H * (.0017 + Math.random() * .0007)), col: cols[(Math.random() * cols.length) | 0], tr: [] });
   }
   function explode(r) {
     const type = Math.random(), n = 90 + ((Math.random() * 70) | 0), w = type < .35;
     const col2 = cols[(Math.random() * cols.length) | 0];
     for (let i = 0; i < n; i++) {
       const a = Math.random() * 6.283, v = (w ? 0.6 : 0.3) + Math.pow(Math.random(), .6) * (w ? 2.2 : 2.6);
-      ps.push({ x: r.x, y: r.y, vx: Math.cos(a) * v, vy: Math.sin(a) * v * (.85 + Math.random() * .3), l: 1, d: (w ? .0035 : .006) + Math.random() * .006, g: w ? .03 : .02 + Math.random() * .015, drag: w ? .975 : .97 + Math.random() * .015, w, col: w ? '#ffd27a' : (Math.random() < .3 ? col2 : r.col), tr: [] });
+      ps.push({ x: r.x, y: r.y, vx: Math.cos(a) * v, vy: Math.sin(a) * v * (.85 + Math.random() * .3), l: 1, d: (w ? .0028 : .0045) + Math.random() * .004, g: w ? .03 : .02 + Math.random() * .015, drag: w ? .975 : .97 + Math.random() * .015, w, col: w ? '#ffd27a' : (Math.random() < .3 ? col2 : r.col), tr: [] });
     }
     ps.push({ flash: 1, x: r.x, y: r.y, col: r.col, l: 1 });
   }
@@ -825,7 +854,7 @@ function fireworks(cv, minGap, maxGap, isOn) {
     if (!isOn()) { run = false; c.clearRect(0, 0, W, H); return; }
     const k = Math.min((t - last) / 16.7 || 1, 3); last = t;
     c.clearRect(0, 0, W, H);
-    if (t > next) { launch(); if (Math.random() < .35) setTimeout(launch, 400 + Math.random() * 900); next = t + minGap + Math.random() * (maxGap - minGap); }
+    if (t > next) { launch(); if (Math.random() < .2) setTimeout(launch, 900 + Math.random() * 1800); next = t + minGap + Math.random() * (maxGap - minGap); }
     c.globalCompositeOperation = 'lighter';
     rk = rk.filter(r => {
       r.tr.push([r.x, r.y]); if (r.tr.length > 14) r.tr.shift();
@@ -850,7 +879,7 @@ function fireworks(cv, minGap, maxGap, isOn) {
   return { start() { if (run) return; size(); run = true; next = 0; last = performance.now(); requestAnimationFrame(frame); }, size };
 }
 if (!reduce) {
-  const fi = fireworks($('#fw-in'), 1500, 3200, () => !intro.classList.contains('done'));
+  const fi = fireworks($('#fw-in'), 3800, 7000, () => !intro.classList.contains('done'));
   fi.start(); addEventListener('resize', fi.size);
 }
 function startMainFireworks() {
@@ -973,7 +1002,7 @@ $('#ics-btn').addEventListener('click', () => {
     const d = ctx.getImageData(0, 0, cv.width, cv.height).data;
     let clear = 0, total = 0;
     for (let i = 3; i < d.length; i += 64) { total++; if (d[i] < 40) clear++; }
-    if (total && clear / total > 0.45) reveal();
+    if (total && clear / total > 0.25) reveal();
   }
   /* achievement blast: confetti burst from the card plus a golden badge */
   function blast() {
